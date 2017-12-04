@@ -5,6 +5,7 @@ require 'json'
 require 'eventmachine'
 require 'faye/websocket'
 require 'sinatra/reloader' if development?
+require './models/koguma.rb'
 
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
   token: ENV['SLACK_API_TOKEN']
@@ -17,10 +18,6 @@ EM.run do
   # Web Socketインスタンスの立ち上げ
   ws = Faye::WebSocket::Client.new(url)
 
-  ws.on :open do
-    p [:open]
-  end
-  
   ws.on :message do |event|
     data = JSON.parse(event.data)
     p [:message, data]
@@ -32,12 +29,6 @@ EM.run do
         channel: data['channel']
         }.to_json)
     end
-  end
-  
-  ws.on :close do
-    p [:close, event.code]
-    ws = nil
-    EM.stop
   end
 
 end
