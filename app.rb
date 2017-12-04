@@ -1,43 +1,26 @@
-require 'bundler/setup'
-Bundler.require
-require 'http'
-require 'json'
-require 'eventmachine'
-require 'faye/websocket'
-require 'sinatra/reloader' if development?
+require 'slack-ruby-client'
 
-response = HTTP.post("https://slack.com/api/rtm.start", params: {
-  token: ENV['SLACK_API_TOKEN']
-})
-rc = JSON.parse(response.body)
-
-url = rc['url']
-
-EM.run do
-  # Web Socketインスタンスの立ち上げ
-  ws = Faye::WebSocket::Client.new(url)
-
-  ws.on :open do
-    p [:open]
-  end
-  
-  ws.on :message do |event|
-    data = JSON.parse(event.data)
-    p [:message, data]
-
-    if data['text'] == 'こんばんは'
-      ws.send({
-        type: 'message',
-        text: "こんばんは <@#{data['user']}> さん",
-        channel: data['channel']
-        }.to_json)
-    end
-  end
-  
-  ws.on :close do
-    p [:close, event.code]
-    ws = nil
-    EM.stop
-  end
-
+Slack.configure do |conf|
+  # 先ほど控えておいたAPI Tokenをセット
+  conf.token = 'xoxb-280709370913-oJJlpq4aa8BAutQnsZiD0Fbs'
 end
+
+# RTM Clientのインスタンスを生成
+client = Slack::RealTime::Client.new
+
+# hello eventを受け取った時の処理
+client.on :hello do
+  puts 'connected!'
+end
+
+# message eventを受け取った時の処理
+client.on :message do |data|
+  case data['text']
+  when 'にゃーん' then
+    # textが 'にゃーん' だったらそのチャンネルに 'Λ__Λ' を投稿
+    client.message channel: data['channel'], text:'Λ__Λ'
+  end
+end
+
+# Slackに接続
+client.start!
