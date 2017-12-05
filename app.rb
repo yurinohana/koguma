@@ -32,10 +32,4 @@ EM.run do
     end
   end
 
-  ws.on :close do
-    p [:close, event.code]
-    ws = nil
-    EM.stop
-  end
-
 end
