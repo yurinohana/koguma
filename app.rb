@@ -2,6 +2,10 @@ require 'http'
 require 'json'
 require 'eventmachine'
 require 'faye/websocket'
+require 'bundler/setup'
+Bundler.require
+require 'sinatra/reloader' if development?
+require './models/koguma.rb'
 
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
     token: ENV['SLACK_API_TOKEN']
@@ -22,14 +26,16 @@ EM.run do
   ws.on :message do |event|
     data = JSON.parse(event.data)
     p [:message, data]
-
-    if data['text'] == 'こんにちは'
+    
+    Template.each do |temp|
+    if data['text'] == temp.input
       ws.send({
         type: 'message',
-        text: "こんにちは <@#{data['user']}> さん",
+        text: temp.output,
         channel: data['channel']
         }.to_json)
     end
+  end
   end
 
 end
