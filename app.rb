@@ -15,6 +15,10 @@ EM.run do
   # Web Socketインスタンスの立ち上げ
   ws = Faye::WebSocket::Client.new(url)
 
+  ws.on :open do
+    p [:open]
+  end
+
   ws.on :message do |event|
     data = JSON.parse(event.data)
     p [:message, data]
