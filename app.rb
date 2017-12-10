@@ -31,5 +31,11 @@ EM.run do
         }.to_json)
     end
   end
+  
+   ws.on :close do |event|
+    p [:close, event.code]
+    ws = nil
+    EM.stop
+  end
 
 end
