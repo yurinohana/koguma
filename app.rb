@@ -32,10 +32,14 @@ EM.run do
     end
   end
   
-   ws.on :close do |event|
+  ws.on :close do |event|
     p [:close, event.code]
     ws = nil
     EM.stop
+  end
+  
+  EventMachine.add_periodic_timer(60) do
+    ws.send "{}"
   end
 
 end
