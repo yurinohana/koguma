@@ -30,7 +30,7 @@ EM.run do
     if data['user'] != 'BOT' || data['text'] == 'こんにちは'
       ws.send({
         type: 'message',
-        text: "こんにちは",
+        text: "はろー",
         channel: data['channel']
         }.to_json)
     end
