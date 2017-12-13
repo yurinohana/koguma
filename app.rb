@@ -2,6 +2,10 @@ require 'http'
 require 'json'
 require 'eventmachine'
 require 'faye/websocket'
+require 'bundler/setup'
+Bundler.require
+require 'sinatra/reloader' if development?
+require './models/koguma.rb'
 
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
     token: ENV['SLACK_API_TOKEN']
