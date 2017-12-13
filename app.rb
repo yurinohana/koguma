@@ -27,7 +27,7 @@ EM.run do
     data = JSON.parse(event.data)
     p [:message, data]
 
-    if data['user'] != 'BOT' || data['text'] == 'こんにちは'
+    if data['text'] == 'こんにちは'
       ws.send({
         type: 'message',
         text: "はろー",
