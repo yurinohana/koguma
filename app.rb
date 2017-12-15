@@ -26,11 +26,12 @@ EM.run do
   ws.on :message do |event|
     data = JSON.parse(event.data)
     p [:message, data]
-
-    if data['user'] != 'U89KG95PD' && data['text'] == 'こんにちは'
+    @input = Dialogue.find_by(input: data['text'])
+    if data['user'] != 'U89KG95PD' && @input
+    # if data['text'] == "こんにちは"
       ws.send({
         type: 'message',
-        text: "はろー",
+        text: @input.output,
         channel: data['channel']
         }.to_json)
     end
