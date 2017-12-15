@@ -1,1 +1,1 @@
-slack bot 
+slack bot having template of dialogues for research.

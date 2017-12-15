@@ -1,11 +1,11 @@
-require 'http'
-require 'json'
-require 'eventmachine'
-require 'faye/websocket'
 require 'bundler/setup'
 Bundler.require
 require 'sinatra/reloader' if development?
 require './models/koguma.rb'
+require 'http'
+require 'json'
+require 'eventmachine'
+require 'faye/websocket'
 
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
     token: ENV['SLACK_API_TOKEN']
@@ -16,7 +16,6 @@ rc = JSON.parse(response.body)
 url = rc['url']
 
 EM.run do
-  # Web Socketインスタンスの立ち上げ
   ws = Faye::WebSocket::Client.new(url)
 
   ws.on :open do
@@ -28,7 +27,6 @@ EM.run do
     p [:message, data]
     @input = Dialogue.find_by(input: data['text'])
     if data['user'] != 'U89KG95PD' && @input
-    # if data['text'] == "こんにちは"
       ws.send({
         type: 'message',
         text: @input.output,
