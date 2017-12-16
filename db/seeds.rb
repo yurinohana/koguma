@@ -1,3 +1,10 @@
 # coding: utf-8
+require "csv"
 
-Dialogue.create(:id => 1, :input => "こんにちは", :output =>"こんちゃ", :created_at => "2017-12-16 15:19:42.568828", :updated_at => "2017-12-16 15:19:42.568828")
+CSV.foreach('db/dialogue.csv') do |row|
+  Dialogue.create(:input => row[0], :output => row[1])
+end
+
+CSV.foreach('db/template.csv') do |row|
+  Template.create(:temp => row[0])
+end

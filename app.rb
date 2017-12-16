@@ -2,6 +2,7 @@ require 'bundler/setup'
 Bundler.require
 require 'sinatra/reloader' if development?
 require './models/koguma.rb'
+require './models/tencho.rb'
 require 'http'
 require 'json'
 require 'eventmachine'
@@ -25,15 +26,17 @@ EM.run do
   ws.on :message do |event|
     data = JSON.parse(event.data)
     p [:message, data]
-    @input = Dialogue.find_by(input: data['text'])
-    #if data['user'] != 'U89KG95PD'
-    #if @input
-    #else
-    #ws.send({})
+    @input = Dialogue.where(input: data['text']).sample
     if data['user'] != 'U89KG95PD' && @input
       ws.send({
         type: 'message',
         text: @input.output,
+        channel: data['channel']
+        }.to_json)
+    elsif data['user'] != 'U89KG95PD' && data['text']
+        ws.send({
+        type: 'message',
+        text: Template.pluck(:temp).sample,
         channel: data['channel']
         }.to_json)
     end
