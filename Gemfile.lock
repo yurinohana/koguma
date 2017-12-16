@@ -40,7 +40,7 @@ GEM
     minitest (5.10.3)
     multi_json (1.12.2)
     mustermann (1.0.1)
-    pg (0.21.0)
+    pg (0.20.0)
     public_suffix (3.0.1)
     rack (2.0.3)
     rack-protection (2.0.0)
@@ -82,7 +82,7 @@ DEPENDENCIES
   faye-websocket
   http
   json
-  pg
+  pg (= 0.20.0)
   rake
   sinatra
   sinatra-activerecord
