@@ -33,7 +33,7 @@ EM.run do
     if data['user'] != 'U89KG95PD' && @input
       ws.send({
         type: 'message',
-        text: @input.output.sample,
+        text: @input.output,
         channel: data['channel']
         }.to_json)
     end
