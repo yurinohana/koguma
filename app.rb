@@ -8,6 +8,8 @@ require 'json'
 require 'eventmachine'
 require 'faye/websocket'
 
+@dialogues = Dialogue.all
+
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
     token: ENV['SLACK_API_TOKEN']
   })
@@ -24,13 +26,21 @@ EM.run do
   end
 
   ws.on :message do |event|
+    @output = Array.new
     data = JSON.parse(event.data)
     p [:message, data]
-    @input = Dialogue.where(input: data['text']).sample
-    if data['user'] != 'U89KG95PD' && @input
+    if data['user'] != 'U89KG95PD' && data['text']
+    @dialogues.each do |dia|
+      if data['text'] =~ /#{dia.input}/
+        @output.push(dia.output)
+      end
+    end
+    # @input = Dialogue.where("input like '#{data['text']}'").sample
+    # @input = Dialogue.where(input: data['text']).sample
+    if data['user'] != 'U89KG95PD' && !@output.empty?
       ws.send({
         type: 'message',
-        text: @input.output,
+        text: @output.sample,
         channel: data['channel']
         }.to_json)
     elsif data['user'] != 'U89KG95PD' && data['text']
@@ -39,6 +49,7 @@ EM.run do
         text: Template.pluck(:temp).sample,
         channel: data['channel']
         }.to_json)
+    end
     end
   end
   
