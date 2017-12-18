@@ -35,8 +35,6 @@ EM.run do
         @output.push(dia.output)
       end
     end
-    # @input = Dialogue.where("input like '#{data['text']}'").sample
-    # @input = Dialogue.where(input: data['text']).sample
     if data['user'] != 'U89KG95PD' && !@output.empty?
       ws.send({
         type: 'message',
